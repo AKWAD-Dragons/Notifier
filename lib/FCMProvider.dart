@@ -1,23 +1,10 @@
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 
 class FCMProvider {
-  final Function(Map<String, dynamic>) _launchTrayByMessage;
-  final Function(Map<String, dynamic>) _launchTrayByMessageIOS;
-  final Function(Map<String, dynamic>) _navigateByMessage;
-  final Function(Map<String, dynamic>) _navigateByMessageIOS;
-
-  FCMProvider(
-    this._launchTrayByMessage,
-    this._launchTrayByMessageIOS,
-    this._navigateByMessage,
-    this._navigateByMessageIOS,
-  ) {
-    setFCMBackgroundMessageHandler();
-  }
-
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final BehaviorSubject<String> fcmTokenSubject = BehaviorSubject<String>();
   final PublishSubject<Map<String, String>> notificationSubject =
@@ -25,30 +12,35 @@ class FCMProvider {
   final PublishSubject<NotificationState> trayNotificationSubject =
       PublishSubject<NotificationState>();
 
-  void setFCMBackgroundMessageHandler() {
+  void setFCMBackgroundMessageHandler({
+    @required Function(Map<String, dynamic>) launchTrayByMessage,
+    @required Function(Map<String, dynamic>) launchTrayByMessageIOS,
+    @required Function(Map<String, dynamic>) navigateByMessage,
+    @required Function(Map<String, dynamic>) navigateByMessageIOS,
+  }) {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         if (Platform.isIOS) {
-          _launchTrayByMessageIOS(message);
+          launchTrayByMessageIOS(message);
           return;
         }
         print("onMessage: $message");
 
-        if (_launchTrayByMessage == null) return;
-        _launchTrayByMessage(message);
+        if (launchTrayByMessage == null) return;
+        launchTrayByMessage(message);
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
       },
       onResume: (Map<String, dynamic> message) async {
         if (Platform.isIOS) {
-          _navigateByMessageIOS(message);
+          navigateByMessageIOS(message);
           return;
         }
         print("onResume: $message");
 
-        if (_navigateByMessage == null) return;
-        _navigateByMessage(message);
+        if (navigateByMessage == null) return;
+        navigateByMessage(message);
       },
     );
     _firebaseMessaging.requestNotificationPermissions();
