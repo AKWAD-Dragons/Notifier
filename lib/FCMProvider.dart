@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 class FCMProvider {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final BehaviorSubject<String> fcmTokenSubject = BehaviorSubject<String>();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   final PublishSubject<Map<String, String>> notificationSubject =
       PublishSubject<Map<String, String>>();
@@ -68,7 +68,7 @@ class FCMProvider {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future<void> notify(Map<String, dynamic> message) async {
+  static Future<void> notify(Map<String, dynamic> message) async {
     AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
       "channelId",
