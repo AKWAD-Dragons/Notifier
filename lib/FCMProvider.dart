@@ -22,9 +22,9 @@ class FCMProvider {
     @required Function(Map<String, dynamic>) onNotificatioClickIOS,
     @required
         Function(int id, String title, String body, String payload)
-            onIOSNotification,
+            iosNotificationWidget,
   }) {
-    _initLocalNotifications(onIOSNotification);
+    _initLocalNotifications(iosNotificationWidget);
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         if (Platform.isIOS) {
@@ -56,12 +56,12 @@ class FCMProvider {
     });
   }
 
-  void _initLocalNotifications(onIOSNotification) async {
+  void _initLocalNotifications(iosNotificationWidget) async {
     AndroidInitializationSettings androidInitializationSettings =
         AndroidInitializationSettings("ic_launcher_foreground");
     IOSInitializationSettings iosInitializationSettings =
         IOSInitializationSettings(
-            onDidReceiveLocalNotification: onIOSNotification);
+            onDidReceiveLocalNotification: iosNotificationWidget);
     InitializationSettings initializationSettings = InitializationSettings(
         androidInitializationSettings, iosInitializationSettings);
 
