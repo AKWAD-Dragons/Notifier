@@ -59,11 +59,8 @@ class FCMProvider {
   void _initLocalNotifications(iosNotificationWidget) async {
     AndroidInitializationSettings androidInitializationSettings =
         AndroidInitializationSettings("ic_launcher_foreground");
-    IOSInitializationSettings iosInitializationSettings =
-        IOSInitializationSettings(
-            onDidReceiveLocalNotification: iosNotificationWidget);
-    InitializationSettings initializationSettings = InitializationSettings(
-        androidInitializationSettings, iosInitializationSettings);
+    InitializationSettings initializationSettings =
+        InitializationSettings(android: androidInitializationSettings);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
@@ -74,15 +71,13 @@ class FCMProvider {
       "channelId",
       ".MainActivity",
       "channelDescription",
-      priority: Priority.High,
-      importance: Importance.Max,
+      priority: Priority.high,
+      importance: Importance.max,
       ticker: "New notification",
     );
 
-    IOSNotificationDetails iOSNotificationDetails = IOSNotificationDetails();
-
     NotificationDetails notificationDetails =
-        NotificationDetails(androidNotificationDetails, iOSNotificationDetails);
+        NotificationDetails(android: androidNotificationDetails);
 
     await flutterLocalNotificationsPlugin.show(
       0,
